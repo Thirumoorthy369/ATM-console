@@ -1,10 +1,11 @@
 import java.util.List;
 import java.util.Scanner;
+import Notes.Notes;
 
 public class UserActions {
 
 
-    public static User userLogin(Scanner sc, List<User> userList) {
+    public static Account userLogin(Scanner sc, List<Account> userList) {
         int attempts = 0; // Counter for login attempts
 
         // Allow up to 3 login attempts
@@ -15,7 +16,7 @@ public class UserActions {
             int password = Integer.parseInt(sc.nextLine());
 
             // Check if the username = userlist
-            for (User user : userList) {
+            for (Account user : userList) {
                 if (user.getUsername().equals(username) && user.getPassword() == password) { // Verify username and password
                     System.out.println("Login successful!");
                     return user; //return to the user
@@ -31,48 +32,13 @@ public class UserActions {
         return null;
     }
 
-    public static void operation(Scanner sc, User user) {
-        ATMSystem atmsystem = new ATMSystem(); // Create an instance var of ATMSystem
-
-        boolean exitMenu = false; // boolean var to control menu loop
-
-        // Loop until user chooses to exit
-        while (!exitMenu) {
-            System.out.println("\nUser Menu:");
-            System.out.println("1. Deposit\n2. Withdraw\n3. View Balance\n4. View Transaction History\n5. Exit");
-            int choice = Integer.parseInt(sc.nextLine()); // Read and parse user choice
-
-            switch (choice) {
-                case 1: // Deposit option
-                    System.out.println("Enter the amount to deposit:");
-                    double amount = Double.parseDouble(sc.nextLine());
-                    handleDeposit(sc, user, amount, atmsystem); //goto deposit method
-                    break;
-
-                case 2: // Withdraw option
-                    handleWithdraw(sc, user, atmsystem); //goto withdraw method
-                    break;
-
-                case 3: // View balance option
-                    viewBalance(user); // Display user's balance
-                    break;
-
-                case 4: // View transaction history option
-                    viewTransactionHistory(user); // Display user's transaction history
-                    break;
-
-                case 5: // Exit option
-                    exitMenu = true; // Exit the menu loop
-                    break;
-
-                default: // Handle invalid input
-                    System.out.println("Invalid choice.");
-            }
-        }
-    }
+//    public static void operation(Scanner sc, Account user, User user1) {
+//
+//    }
 
     // Method to handle deposit operation
-    private static Object handleDeposit(Scanner sc, User user, double amount, ATMSystem atmsystem) {
+    static Double handleDeposit(Scanner sc, Account user, double amount, ATMSystem atmsystem,User user1) {
+
         System.out.println("Enter denominations and their counts for deposit:");
 
         System.out.print("Number of 2000 notes: ");
@@ -102,20 +68,20 @@ public class UserActions {
             note100.setNote(note100.getNote() + count100);
 
             // Update user's balance and add transaction
-            user.setBalance(user.getBalance() + totalAmount);
-            user.addTransaction(new Transfer("Deposit", totalAmount));
+            user1.setBalance(user1.getBalance() + totalAmount);
+            user.addTransactionHistory(new Transfer("Deposit", "User",totalAmount));
 
-            System.out.println("Deposit successful. Current Balance: " + user.getBalance());
+            System.out.println("Deposit successful. Current Balance: " + user1.getBalance());
             ATMSystem.updateAtmBalance(amount); // Update ATM balance
         } else {
             System.out.println("Your deposit amount does not match the denominations.");
-            return handleDeposit(sc, user, amount, atmsystem); // Recursively call deposit handler
+            return handleDeposit(sc, user, amount, atmsystem,user1); // Recursively call deposit handler
         }
         return null; // Return null after successful deposit
     }
 
     // Method to handle withdrawal operation
-    private static void handleWithdraw(Scanner sc, User user, ATMSystem atmsystem) {
+     static void handleWithdraw(Scanner sc, Account user, ATMSystem atmsystem,User user1) {
         System.out.print("Enter withdrawal amount: ");
         int withdrawAmount = Integer.parseInt(sc.nextLine());
 
@@ -159,8 +125,8 @@ public class UserActions {
         note100.setNote(note100.getNote() - count100);
 
         ATMSystem.updateAtmBalance(-withdrawAmount); // find withdrawal amount from ATM balance
-        user.setBalance(user.getBalance() - withdrawAmount); //find withdrawal amount from user's balance
-        user.addTransaction(new Transfer("Withdraw", withdrawAmount)); // Record the transaction
+        user1.setBalance(user1.getBalance() - withdrawAmount); //find withdrawal amount from user's balance
+        user.addTransactionHistory(new Transfer("Withdraw", "User",withdrawAmount)); // Record the transaction
 
         // Notify user of successful withdrawal
         System.out.println("Withdrawal successful. Dispensed denominations:");
@@ -168,17 +134,17 @@ public class UserActions {
         System.out.println("500 x " + count500);
         System.out.println("200 x " + count200);
         System.out.println("100 x " + count100);
-        System.out.println("Current Balance: " + user.getBalance());
+        System.out.println("Current Balance: " + user1.getBalance());
     }
 
     // Method to display user's current balance
-    private static void viewBalance(User user) {
+    static void viewBalance(User user) {
         System.out.println("Your balance: " + user.getBalance());
     }
 
     // Method to display user's transaction history
-    private static void viewTransactionHistory(User user) {
-        List<Transfer> transactionHistory = user.getTransactionHistory(); // view user's transaction history
+    static void viewTransactionHistory(User user) {
+        List<Transfer> transactionHistory = user.getTransactionHistory("","",0); // view user's transaction history
 
         // Check if there are any transactions
         if (transactionHistory.isEmpty()) {

@@ -10,20 +10,20 @@ public class Transfer { // Class to handle individual transactions
         this.amount = amount;
     }
 
-    public String getType() {// Getter for type of the transaction
+    public String getType() {// Getter method to get the type of the transaction
         return type;
     }
 
-    public String getName(){
+    public String getName(){ //Getter method to get the name
         return name;
     }
 
-    public double getAmount() {// Getter for type of the transaction
+    public double getAmount() {// Getter method to get the amount
         return amount;
     }
 
     @Override
-    public String toString() {// Getter for type of the transaction
-        return "Type: " + type + "Done by" + name + ", Amount: " + amount;
+    public String toString() {// Override the tostring method to get user-friendly transaction
+        return "Type: " + type + " Done by " + name + ", Amount: " + amount;
     }
 }

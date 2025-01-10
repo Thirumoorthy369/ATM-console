@@ -3,8 +3,13 @@ public class User extends Account {// User class
     private double balance;
     //constructor method
     public User(String username, int password) {
-        super(username, password);
+        super(username, password);//super keyword to access the superclass
     }
+
+    public User() {
+        super();
+    }
+
     public double getBalance() { //getter for the user's bal
         return balance;
     }
@@ -13,16 +18,3 @@ public class User extends Account {// User class
         this.balance = balance;
     }
 }
-
-//    public int setPassword(int newPin) {//method to set a new password
-//        return password;
-//
-//    }
-
-//    public String getUsername() { //Getter for the username
-//        return username;
-//    }
-//
-//    public int getPassword() {  //getter for the password
-//        return password;
-//    }

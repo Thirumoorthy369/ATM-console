@@ -10,16 +10,19 @@ public class UserActions {
 
         // Allow up to 3 login attempts
         while (attempts < 3) {
+            //getting the name  nd pass for uer
             System.out.print("Enter Username: ");
             String username = sc.nextLine();
             System.out.print("Enter Password: ");
             int password = Integer.parseInt(sc.nextLine());
 
             // Check if the username = userlist
-            for (Account user : userList) {
-                if (user.getUsername().equals(username) && user.getPassword() == password) { // Verify username and password
-                    System.out.println("Login successful!");
-                    return user; //return to the user
+            for (Account user : userList) {//for loop to get the list of admin username
+                if (user instanceof User) {
+                    if (user.getUsername().equals(username) && user.getPassword() == password) { // Verify username and password
+                        System.out.println("Login successful!");
+                        return user; //return to the user
+                    }
                 }
             }
 
@@ -32,13 +35,9 @@ public class UserActions {
         return null;
     }
 
-//    public static void operation(Scanner sc, Account user, User user1) {
-//
-//    }
-
     // Method to handle deposit operation
     static Double handleDeposit(Scanner sc, Account user, double amount, ATMSystem atmsystem,User user1) {
-
+        //getting the denominations for deposit amount.
         System.out.println("Enter denominations and their counts for deposit:");
 
         System.out.print("Number of 2000 notes: ");
@@ -69,7 +68,7 @@ public class UserActions {
 
             // Update user's balance and add transaction
             user1.setBalance(user1.getBalance() + totalAmount);
-            user.addTransactionHistory(new Transfer("Deposit", "User",totalAmount));
+            user.getTransactionHistory().add(new Transfer("Deposit","User", totalAmount));
 
             System.out.println("Deposit successful. Current Balance: " + user1.getBalance());
             ATMSystem.updateAtmBalance(amount); // Update ATM balance
@@ -82,6 +81,7 @@ public class UserActions {
 
     // Method to handle withdrawal operation
      static void handleWithdraw(Scanner sc, Account user, ATMSystem atmsystem,User user1) {
+        //getting the withdrawn amount.
         System.out.print("Enter withdrawal amount: ");
         int withdrawAmount = Integer.parseInt(sc.nextLine());
 
@@ -126,9 +126,10 @@ public class UserActions {
 
         ATMSystem.updateAtmBalance(-withdrawAmount); // find withdrawal amount from ATM balance
         user1.setBalance(user1.getBalance() - withdrawAmount); //find withdrawal amount from user's balance
-        user.addTransactionHistory(new Transfer("Withdraw", "User",withdrawAmount)); // Record the transaction
+         user.getTransactionHistory().add(new Transfer( "Withdraw","User", withdrawAmount));
 
-        // Notify user of successful withdrawal
+
+         // Notify user of successful withdrawal
         System.out.println("Withdrawal successful. Dispensed denominations:");
         System.out.println("2000 x " + count2000);
         System.out.println("500 x " + count500);
@@ -144,15 +145,20 @@ public class UserActions {
 
     // Method to display user's transaction history
     static void viewTransactionHistory(User user) {
-        List<Transfer> transactionHistory = user.getTransactionHistory("","",0); // view user's transaction history
-
-        // Check if there are any transactions
-        if (transactionHistory.isEmpty()) {
-            System.out.println("No transaction history found."); //  display if no transactions exist
-        } else {
-            System.out.println("Transaction History:");
-            for (Transfer transfer : transactionHistory) { // Loop through and display each transaction
-                System.out.println(transfer);
+        for(Account account: ATMSystem.getUserList()){//for loop to get the list of admin username
+            if(account instanceof User){//if condition to check account is user Object
+                if(account.equals(user)) {//checks the user is equal to the user.
+                    List<Transfer> transactions = user.getTransactionHistory();//stores the particular user's transactions to the transactions.
+                    if (transactions.isEmpty()) {//i transsactions is not empty enters into body.
+                        System.out.println("No transaction history available.");
+                    } else {
+                        //if transaction is not empty.
+                        System.out.println("\nTransaction History:");
+                        for (Transfer transfer : transactions){//prints the each transaction using the loop.
+                            System.out.println(transfer);
+                        }
+                    }
+                }
             }
         }
     }

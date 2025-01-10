@@ -1,10 +1,7 @@
-import java.util.ArrayList;
-import java.util.List;
-
+//admin class
 public class Admin extends Account{
-    private  double atmBalance; //admin deposit amt to update atmbal
-
+   //constructor method
     public Admin(String username, int password) {
-        super(username,password);
+        super(username,password); //super keyword to access the superclass
     }
 }
